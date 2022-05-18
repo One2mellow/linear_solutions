@@ -2,6 +2,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+
+float parsing(char* equation, char coef, int length);
+
+
+
 int main() {
 	int num,i,j;
 	float** mtrx, *x,*b;
@@ -33,6 +38,8 @@ int main() {
 			gets_s(equ[i], 80);
 		}
 	}
+
+	parsing(equ[0], x, strlen(equ[0]));
 	//// init array
 	//for (i = 0;i < num;i++)
 	//	for (j = 0;j < num;j++)
@@ -61,4 +68,27 @@ int main() {
 
 
 	return 0;
+}
+
+
+float parsing(char* equation, char coef, int length) {
+	float co=0.0;
+	int i;
+	char* str, * dex, *temp;
+
+	str = malloc(sizeof(char*) * length);
+	temp = malloc(sizeof(char*) * length);
+
+	strcpy_s(str, sizeof(str), equation);
+	dex = strchr(str, coef);
+	for ( i = length ; i >0 ; i--)
+	{
+		if ((str[dex-str] > 47 && str[dex-str))
+		{
+
+		}
+	}
+
+
+	return co;
 }
