@@ -39,7 +39,7 @@ int main() {
 		}
 	}
 
-	parsing(equ[0], x, strlen(equ[0]));
+	parsing(equ[0], 'x', strlen(equ[0]));
 	//// init array
 	//for (i = 0;i < num;i++)
 	//	for (j = 0;j < num;j++)
@@ -74,21 +74,28 @@ int main() {
 float parsing(char* equation, char coef, int length) {
 	float co=0.0;
 	int i;
-	char* str, * dex, *temp;
+	char str[81];
+	char * dex, *temp;
 
-	str = malloc(sizeof(char*) * length);
 	temp = malloc(sizeof(char*) * length);
-
 	strcpy_s(str, sizeof(str), equation);
 	dex = strchr(str, coef);
-	for ( i = length ; i >0 ; i--)
+
+	if (dex != NULL)
 	{
-		if ((str[dex-str] > 47 && str[dex-str))
+		for (i = 0; i < length; i++)
 		{
-
+			if ((str[dex - str - i] > 47 && str[dex - str - i] < 58)/* || str[dex - str - i] == '.'*/)
+			{
+				temp[i] = str[dex - str - i];
+				printf("\n%c\n", str[dex - str - i]);
+			}
 		}
+		temp[i + 1] = '\0';
 	}
+	puts(str);
+	printf("string %s\n lentgh: %d\n first char: %c\n", temp, strlen(temp), temp[0]);
 
-
+	free(temp);
 	return co;
 }
