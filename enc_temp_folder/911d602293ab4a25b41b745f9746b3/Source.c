@@ -80,6 +80,12 @@ float parsing(char* equation, char coef, int length) {
 
 	temp = malloc(sizeof(char*) * length);
 	strcpy(temp, equation);
+	puts(temp);
+
+	for (size_t i = 0; i < strlen(equation); i++) {
+		str[i] = equation[i];
+		// Access each char in the string
+	}
 
 	if (str[0] != '\0') {
 		switch (coef)
