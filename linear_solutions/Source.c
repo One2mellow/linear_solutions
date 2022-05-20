@@ -29,7 +29,7 @@ int main() {
 	
 	x = malloc(sizeof(float) * num);
 	b = malloc(sizeof(float) * num);
-	
+
 
 	if (equ)
 	{
@@ -39,7 +39,9 @@ int main() {
 		}
 	}
 
-	parsing(equ[0], 'x', strlen(equ[0]));
+	printf("%p\n",& equ[0]);
+	parsing(equ[0], 'z', strlen(equ[0]));
+
 	//// init array
 	//for (i = 0;i < num;i++)
 	//	for (j = 0;j < num;j++)
@@ -73,29 +75,34 @@ int main() {
 
 float parsing(char* equation, char coef, int length) {
 	float co=0.0;
-	int i;
+	int i=0;
 	char str[81];
-	char * dex, *temp;
+	char* dex, * temp;
 
-	temp = malloc(sizeof(char*) * length);
-	strcpy_s(str, sizeof(str), equation);
-	dex = strchr(str, coef);
-
-	if (dex != NULL)
-	{
-		for (i = 0; i < length; i++)
-		{
-			if ((str[dex - str - i] > 47 && str[dex - str - i] < 58)/* || str[dex - str - i] == '.'*/)
-			{
-				temp[i] = str[dex - str - i];
-				printf("\n%c\n", str[dex - str - i]);
-			}
-		}
-		temp[i + 1] = '\0';
+	for (size_t i = 0; i < strlen(equation); i++) {
+		str[i] = equation[i];
+		// Access each char in the string
 	}
-	puts(str);
-	printf("string %s\n lentgh: %d\n first char: %c\n", temp, strlen(temp), temp[0]);
 
-	free(temp);
+	if (str[0] != '\0') {
+		switch (coef)
+		{
+		case 'x':
+			temp = strtok(str, "x");
+				break;
+		case'y':
+			temp = strtok(str, "y");
+			break;
+		case 'z':
+			temp = strtok(str, "z");
+			puts(temp);
+			break;
+
+		default:
+			break;
+		}
+	}
+
+
 	return co;
 }
