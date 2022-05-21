@@ -11,6 +11,8 @@ void cut(char* equation, int length, char coef);
 
 float determinent(float** mtrx, int num);
 
+float cramer(float** mtrx, float* sol, int num, int col);
+
 int main() {
 	int num, i, j, col = 0;
 	float** mtrx, * x, * b;
@@ -82,12 +84,21 @@ int main() {
 	}
 
 
+	//Using Cramer's rule to get the solution vector
+	printf_s("\n\nCRAMER'S RULE\n\n");
+	for ( i = 0; i < num; i++)
+	{
+		x[i] = cramer(mtrx, b, num, i);
+		printf_s("\n%.2f", x[i]);
+	}
 	det = determinent(mtrx, num);
-
-	printf("%.2f", det);
+	
+	printf_s("\nDETERMINENT\n\t%.2f", det);
 
 	putchar('\n');
 
+	//Print Matrix
+	printf_s("\nMATRIX\n");
 	for (i = 0;i < num;i++) {
 		for (j = 0;j < num;j++) {
 			printf_s("%.2f ", mtrx[i][j]);
@@ -95,10 +106,10 @@ int main() {
 		printf_s("\n");
 	}
 
-	printf("Solution vector\n");
+	printf_s("Solution vector\n");
 	for ( i = 0; i < num; i++)
 	{
-		printf("%.2f\n", b[i]);
+		printf_s("%.2f\n", b[i]);
 	}
 
 
@@ -242,4 +253,35 @@ float determinent(float** mtrx, int num) {
 	}
 
 	return det;
+}
+
+
+
+//Cramer's rule
+float cramer(float** mtrx, float* sol, int num, int col) {
+	int i, j;
+	float detmp, det, value;
+	float** tmpmtrx;
+
+	tmpmtrx = malloc(sizeof(float*) * num);
+	for (i = 0;i < num;i++)
+		tmpmtrx[i] = malloc(sizeof(float) * num);
+
+	//Print Matrix
+	for (i = 0;i < num;i++) {
+		for (j = 0;j < num;j++) {
+			tmpmtrx[i][j] = mtrx[i][j];
+		}
+	}
+
+	for ( i = 0; i < num; i++)
+	{
+		tmpmtrx[i][col] = sol[i];
+	}
+	det = determinent(mtrx, num);
+	detmp = determinent(tmpmtrx, num);
+
+	value = detmp / det;
+
+	return value;
 }
