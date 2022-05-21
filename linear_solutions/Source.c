@@ -43,6 +43,13 @@ int main() {
 	b = malloc(sizeof(float) * num);
 
 
+	// initiating vectors as 0
+	for (i = 0;i < num; i++) {
+		x[i] = 0;
+		b[i] = 0;
+	}
+
+
 	if (equ)
 	{
 		for (i = 0; i < num; i++) {
@@ -58,11 +65,18 @@ int main() {
 			for (j = 0; j < num; j++)
 			{
 				coef = order(equ[i], strlen(equ[i]), &col);
-				if (coef != '\0')
+				if (coef != '\0' && coef != '=')
 				{
 					mtrx[i][col] = parsing(equ[i], coef, strlen(equ[i]));
 				}
+				
 				cut(equ[i], strlen(equ[i]), coef);
+			}
+			coef = order(equ[i], strlen(equ[i]), &col);
+			//cut(equ[i], strlen(equ[i]), coef);
+			if (coef == '=')
+			{
+				b[i] = parsing(equ[i], coef, strlen(equ[i]));
 			}
 		}
 	}
@@ -76,10 +90,15 @@ int main() {
 
 	for (i = 0;i < num;i++) {
 		for (j = 0;j < num;j++) {
-			//			mtrx[i][j] = i + j;
 			printf_s("%.2f ", mtrx[i][j]);
 		}
 		printf_s("\n");
+	}
+
+	printf("Solution vector\n");
+	for ( i = 0; i < num; i++)
+	{
+		printf("%.2f\n", b[i]);
 	}
 
 
@@ -126,6 +145,11 @@ float parsing(char* equation, char coef, int length) {
 		case 'z':
 			temp = strtok(str, "z");
 			break;
+		case '=':
+			dex = strchr(str, '=');
+			str[dex - str] = ' ';
+			strcpy(temp, str);
+			break;
 		case '\0':
 			return 0.0;
 			break;
@@ -155,7 +179,7 @@ char order(char* equation, int length, int* col) {
 	//strcpy_s(temp ,sizeof(char*)*length, equation);
 	for (i = 0; i < length; i++)
 	{
-		if (equation[i] == 'x' || equation[i] == 'y' || equation[i] == 'z') {
+		if (equation[i] == 'x' || equation[i] == 'y' || equation[i] == 'z' || equation[i] == '=') {
 			coef = equation[i];
 			break;
 		}
@@ -191,6 +215,8 @@ void cut(char* equation, int length, char coef) {
 	while (i < dex - equation + 1) {
 		equation[i] = ' ';
 		i++;
+		if (equation[i] == '=')
+			break;
 	}
 }
 
