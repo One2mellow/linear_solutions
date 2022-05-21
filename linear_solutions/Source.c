@@ -5,12 +5,12 @@
 
 float parsing(char* equation, char coef, int length);
 
-char order(char* equation, int length);
+char order(char* equation, int length, int* col);
 
 void cut(char* equation, int length, char coef);
 
 int main() {
-	int num, i, j;
+	int num, i, j, col = 0;
 	float** mtrx, * x, * b;
 	char** equ;
 	char coef;
@@ -24,6 +24,10 @@ int main() {
 	mtrx = malloc(sizeof(float*) * num);
 	for (i = 0;i < num;i++)
 		mtrx[i] = malloc(sizeof(float) * num);
+
+	for (i = 0;i < num;i++)
+		for (j = 0;j < num;j++)
+			mtrx[i][j] = 0;
 
 	equ = malloc(sizeof(char*) * num);
 	if (equ)
@@ -50,35 +54,25 @@ int main() {
 		for (i = 0;i < num; i++) {
 			for (j = 0; j < num; j++)
 			{
-				coef = order(equ[i], strlen(equ[i]));
-				mtrx[i][j] = parsing(equ[i], coef, strlen(equ[i]));
+				coef = order(equ[i], strlen(equ[i]), &col);
+				if (coef != '\0')
+				{
+					mtrx[i][col] = parsing(equ[i], coef, strlen(equ[i]));
+				}
 				cut(equ[i], strlen(equ[i]), coef);
 			}
 		}
 	}
 
+	putchar('\n');
 
-	for (i = 0; i < num; i++)
-	{
-		//printf("%s\n", equ[i]);
-		for ( j = 0; j < num; j++)
-		{
-			printf("%.2f\n", mtrx[i][j]);
-		}
-	}
-
-	//// init array
-	//for (i = 0;i < num;i++)
-	//	for (j = 0;j < num;j++)
-	//		mtrx[i][j] = 0;
-	//puts("");
 	for (i = 0;i < num;i++) {
 		for (j = 0;j < num;j++) {
-//			mtrx[i][j] = i + j;
+			//			mtrx[i][j] = i + j;
 			printf_s("%.2f ", mtrx[i][j]);
 		}
 		printf_s("\n");
-	}	
+	}
 
 
 
@@ -86,8 +80,8 @@ int main() {
 		free(mtrx[i]);
 	free(mtrx);
 
-	for (i = 0;i < num;i++)
-		free(equ[i]);
+	//for (i = 0;i < num;i++)
+	//	free(equ[i]);
 	free(equ);
 
 	free(x);
@@ -97,6 +91,7 @@ int main() {
 	return 0;
 }
 
+//cutting the eaquation to find the coefficient
 
 float parsing(char* equation, char coef, int length) {
 	float co = 0.0;
@@ -123,11 +118,14 @@ float parsing(char* equation, char coef, int length) {
 		case 'z':
 			temp = strtok(str, "z");
 			break;
-
+		case '\0':
+			return 0.0;
+			break;
 		default:
 			break;
 		}
 	}
+
 
 	co = atof(temp);
 
@@ -137,48 +135,54 @@ float parsing(char* equation, char coef, int length) {
 }
 
 
-char order(char* equation, int length) {
+// Finding the first variable x,y,z in the equation to cut the string for, and return the correct variable column #
+
+char order(char* equation, int length, int* col, int* cx, int* cy, int* cz) {
 	int i;
-	char coef ='x';
+	char coef = '\0';
 	char* temp;
 
-	temp = malloc(sizeof(char*) * length);
+	//temp = malloc(sizeof(char*) * length);
 
-	strcpy_s(temp ,sizeof(char*)*length, equation);
-	for (size_t i = 0; i < length; i++)
+	//strcpy_s(temp ,sizeof(char*)*length, equation);
+	for (i = 0; i < length; i++)
 	{
-		if (temp[i] == 'x' || temp[i] == 'y' || temp[i] == 'z') {
-			coef = temp[i];
+		if (equation[i] == 'x' || equation[i] == 'y' || equation[i] == 'z') {
+			coef = equation[i];
+			break;
 		}
-
 	}
 
-	free(temp);
+	switch (coef)
+	{
+	case 'x':
+		*col = 0;
+		break;
+	case 'y':
+		*col = 1;
+		break;
+	case 'z':
+		*col = 2;
+		break;
+	default:
+		break;
+	}
+
+	//free(temp);
 	return coef;
 }
 
 
-
+// shortening the equation according to the variable
 void cut(char* equation, int length, char coef) {
-	int j,i = 0;
+	int j, i = 0;
 	char* dex;
 
-	for (i = 0; i < length; i++)
-	{
-		if (equation[i] == coef);
-		{
-			printf("\n***%c***\n", equation[i+1]);
-			for (j = 0; equation[i]!='\0' ; j++) {
-				equation[j] = equation[i+2];
-				i++;
-			}
-			equation[i + 1] = '\0';
-		}
+	dex = strchr(equation, coef);
+
+	while (i < dex - equation + 1) {
+		equation[i] = ' ';
+		i++;
 	}
-
-
-	//puts(equation[dex-equation]);
-
-	//equation[i + 1] = '\0';
-
 }
+
