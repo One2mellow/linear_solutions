@@ -9,9 +9,12 @@ char order(char* equation, int length, int* col);
 
 void cut(char* equation, int length, char coef);
 
+float determinent(float** mtrx, int num);
+
 int main() {
 	int num, i, j, col = 0;
 	float** mtrx, * x, * b;
+	float det;
 	char** equ;
 	char coef;
 
@@ -63,6 +66,11 @@ int main() {
 			}
 		}
 	}
+
+
+	det = determinent(mtrx, num);
+
+	printf("%.2f", det);
 
 	putchar('\n');
 
@@ -137,7 +145,7 @@ float parsing(char* equation, char coef, int length) {
 
 // Finding the first variable x,y,z in the equation to cut the string for, and return the correct variable column #
 
-char order(char* equation, int length, int* col, int* cx, int* cy, int* cz) {
+char order(char* equation, int length, int* col) {
 	int i;
 	char coef = '\0';
 	char* temp;
@@ -186,3 +194,26 @@ void cut(char* equation, int length, char coef) {
 	}
 }
 
+
+
+//calculating the determinent
+float determinent(float** mtrx, int num) {
+	float det;
+	int i;
+
+	if (num == 2)
+	{
+		det = mtrx[0][0] * mtrx[1][1] - mtrx[0][1] * mtrx[1][0];
+	}
+	else if (num == 3)
+	{
+		det = mtrx[0][0] * ((mtrx[1][1] * mtrx[2][2]) - (mtrx[2][1] * mtrx[1][2])) - mtrx[0][1] * (mtrx[1][0]
+			* mtrx[2][2] - mtrx[2][0] * mtrx[1][2]) + mtrx[0][2] * (mtrx[1][0] * mtrx[2][1] - mtrx[2][0] * mtrx[1][1]);
+	}
+	else
+	{
+		det = mtrx[0][0];
+	}
+
+	return det;
+}
