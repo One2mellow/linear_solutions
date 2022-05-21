@@ -5,12 +5,13 @@
 
 float parsing(char* equation, char coef, int length);
 
-
+char order(char* equation, int length);
 
 int main() {
-	int num,i,j;
-	float** mtrx, *x,*b;
+	int num, i, j;
+	float** mtrx, * x, * b;
 	char** equ;
+	char coef;
 
 	printf_s("Number of equations (1-3): ");
 	scanf_s("%d", &num);
@@ -19,14 +20,14 @@ int main() {
 	mtrx = malloc(sizeof(float*) * num);
 	for (i = 0;i < num;i++)
 		mtrx[i] = malloc(sizeof(float) * num);
-	
+
 	equ = malloc(sizeof(char*) * num);
 	if (equ)
 	{
 		for (i = 0;i < num;i++)
 			equ[i] = malloc(sizeof(char) * 81);
 	}
-	
+
 	x = malloc(sizeof(float) * num);
 	b = malloc(sizeof(float) * num);
 
@@ -39,7 +40,10 @@ int main() {
 		}
 	}
 
-	parsing(equ[0], 'x', strlen(equ[0]));
+	coef = order(equ[0], strlen(equ[0]));
+
+	mtrx[0][0] = parsing(equ[0], coef, strlen(equ[0]));
+
 
 	//// init array
 	//for (i = 0;i < num;i++)
@@ -52,7 +56,7 @@ int main() {
 	//		printf_s("%.2f ", mtrx[i][j]);
 	//	}
 	//	printf_s("\n");
-	//}
+	//}	
 
 
 
@@ -73,15 +77,16 @@ int main() {
 
 
 float parsing(char* equation, char coef, int length) {
-	float co=0.0;
-	int i=0;
+	float co = 0.0;
+	int i = 0;
 	char str[81];
 	char* dex, * temp;
 
 	temp = malloc(sizeof(char*) * length);
-	strcpy(temp, equation);
+	strcpy(str, equation);
 
 	if (str[0] != '\0') {
+
 		switch (coef)
 		{
 		case ' ':
@@ -89,13 +94,12 @@ float parsing(char* equation, char coef, int length) {
 			break;
 		case 'x':
 			temp = strtok(str, "x");
-				break;
+			break;
 		case'y':
 			temp = strtok(str, "y");
 			break;
 		case 'z':
 			temp = strtok(str, "z");
-			puts(temp);
 			break;
 
 		default:
@@ -103,5 +107,33 @@ float parsing(char* equation, char coef, int length) {
 		}
 	}
 
+	puts(temp);
+
+	co = atof(temp);
+
+
+	free(temp);
 	return co;
+}
+
+
+char order(char* equation, int length) {
+	int i;
+	char coef;
+	char* temp;
+
+	temp = malloc(sizeof(char*) * length);
+
+	strcpy(temp, equation);
+
+	for (size_t i = 0; i < length; i++)
+	{
+		if (temp[i] == 'x' || temp[i] == 'y' || temp[i] == 'z') {
+			coef = temp[i];
+		}
+
+	}
+
+	free(temp);
+	return coef;
 }
