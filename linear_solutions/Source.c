@@ -1,3 +1,7 @@
+/* Nitai Dan
+   207379132*/
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -130,8 +134,8 @@ int main() {
 		free(mtrx[i]);
 	free(mtrx);
 
-	//for (i = 0;i < num;i++)
-	//	free(equ[i]);
+	for (i = 0;i < num;i++)
+		free(equ[i]);
 	free(equ);
 
 	free(x);
@@ -298,6 +302,10 @@ double cramer(double** mtrx, double* sol, int num, int col) {
 	detmp = determinent(tmpmtrx, num);
 
 	value = detmp / det;
+
+	for (i = 0; i < num; i++)
+		free(tmpmtrx[i]);
+	free(tmpmtrx);
 
 	return value;
 }
