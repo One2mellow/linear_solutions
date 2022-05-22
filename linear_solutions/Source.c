@@ -77,7 +77,6 @@ int main() {
 				cut(equ[i], strlen(equ[i]), coef);
 			}
 			coef = order(equ[i], strlen(equ[i]), &col);
-			//cut(equ[i], strlen(equ[i]), coef);
 			if (coef == '=')
 			{
 				b[i] = parsing(equ[i], coef, strlen(equ[i]));
@@ -196,11 +195,7 @@ double parsing(char* equation, char coef, int length) {
 char order(char* equation, int length, int* col) {
 	int i;
 	char coef = '\0';
-	char* temp;
 
-	//temp = malloc(sizeof(char*) * length);
-
-	//strcpy_s(temp ,sizeof(char*)*length, equation);
 	for (i = 0; i < length; i++)
 	{
 		if (equation[i] == 'x' || equation[i] == 'y' || equation[i] == 'z' || equation[i] == '=') {
@@ -225,7 +220,6 @@ char order(char* equation, int length, int* col) {
 		break;
 	}
 
-	//free(temp);
 	return coef;
 }
 
@@ -236,7 +230,7 @@ void cut(char* equation, int length, char coef) {
 	char* dex;
 
 
-	dex = strchr(equation, '*'); //converts double dots to new line
+	dex = strchr(equation, '*'); //Deleting astrix and jointing the coeficient to the variable
 	while (dex != NULL)
 	{
 		equation[dex - equation] = ' ';
