@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 
-double parsing(char* equation, char coef, int length);
+double parsing(char* equation, char* temp, char coef, int length);
 
 char order(char* equation, int length, int* col);
 
@@ -23,7 +23,7 @@ int main() {
 	int num, i, j, col = 0;
 	double** mtrx, * x, * b;
 	double det;
-	char** equ;
+	char** equ, *temp;
 	char coef;
 
 	printf_s("Number of equations (1-3): ");
@@ -49,6 +49,7 @@ int main() {
 
 	x = malloc(sizeof(double) * num);
 	b = malloc(sizeof(double) * num);
+	temp = malloc(sizeof(char*) * 81);
 
 
 	// initiating vectors as 0
@@ -75,7 +76,7 @@ int main() {
 				coef = order(equ[i], strlen(equ[i]), &col);
 				if (coef != '\0' && coef != '=')
 				{
-					mtrx[i][col] = parsing(equ[i], coef, strlen(equ[i]));
+					mtrx[i][col] = parsing(equ[i], temp, coef, strlen(equ[i]));
 				}
 
 				cut(equ[i], strlen(equ[i]), coef);
@@ -83,7 +84,7 @@ int main() {
 			coef = order(equ[i], strlen(equ[i]), &col);
 			if (coef == '=')
 			{
-				b[i] = parsing(equ[i], coef, strlen(equ[i]));
+				b[i] = parsing(equ[i], temp, coef, strlen(equ[i]));
 			}
 		}
 	}
@@ -134,10 +135,10 @@ int main() {
 		free(mtrx[i]);
 	free(mtrx);
 
-	for (i = 0;i < num;i++)
-		free(equ[i]);
+	//for (i = 0;i < num;i++)
+	//	free(equ[i]);
 	free(equ);
-
+	free(temp);
 	free(x);
 	free(b);
 
@@ -147,13 +148,11 @@ int main() {
 
 //cutting the eaquation to find the coefficient
 
-double parsing(char* equation, char coef, int length) {
+double parsing(char* equation,char *temp, char coef, int length) {
 	double co = 0.0;
 	int i = 0;
 	char str[81];
-	char* dex, * temp;
-
-	temp = malloc(sizeof(char*) * length);
+	char* dex;
 	strcpy(str, equation);
 
 	if (str[0] != '\0') {
@@ -189,7 +188,6 @@ double parsing(char* equation, char coef, int length) {
 	co = atof(temp);
 
 
-	//free(temp);
 	return co;
 }
 
@@ -302,10 +300,6 @@ double cramer(double** mtrx, double* sol, int num, int col) {
 	detmp = determinent(tmpmtrx, num);
 
 	value = detmp / det;
-
-	for (i = 0; i < num; i++)
-		free(tmpmtrx[i]);
-	free(tmpmtrx);
 
 	return value;
 }
