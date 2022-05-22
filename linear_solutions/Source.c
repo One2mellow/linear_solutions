@@ -3,20 +3,22 @@
 #include <stdlib.h>
 
 
-float parsing(char* equation, char coef, int length);
+double parsing(char* equation, char coef, int length);
 
 char order(char* equation, int length, int* col);
 
+void space_handler(char* equation, int length);
+
 void cut(char* equation, int length, char coef);
 
-float determinent(float** mtrx, int num);
+double determinent(double** mtrx, int num);
 
-float cramer(float** mtrx, float* sol, int num, int col);
+double cramer(double** mtrx, double* sol, int num, int col);
 
 int main() {
 	int num, i, j, col = 0;
-	float** mtrx, * x, * b;
-	float det;
+	double** mtrx, * x, * b;
+	double det;
 	char** equ;
 	char coef;
 
@@ -26,9 +28,9 @@ int main() {
 
 
 	// Create dynamic array
-	mtrx = malloc(sizeof(float*) * num);
+	mtrx = malloc(sizeof(double*) * num);
 	for (i = 0;i < num;i++)
-		mtrx[i] = malloc(sizeof(float) * num);
+		mtrx[i] = malloc(sizeof(double) * num);
 
 	for (i = 0;i < num;i++)
 		for (j = 0;j < num;j++)
@@ -41,8 +43,8 @@ int main() {
 			equ[i] = malloc(sizeof(char) * 81);
 	}
 
-	x = malloc(sizeof(float) * num);
-	b = malloc(sizeof(float) * num);
+	x = malloc(sizeof(double) * num);
+	b = malloc(sizeof(double) * num);
 
 
 	// initiating vectors as 0
@@ -57,8 +59,8 @@ int main() {
 		for (i = 0; i < num; i++) {
 			printf_s("Enter equation %d: ", i + 1);
 			gets_s(equ[i], 80);
+			space_handler(equ[i], strlen(equ[i]));
 		}
-
 	}
 
 	if (mtrx && equ)
@@ -71,7 +73,7 @@ int main() {
 				{
 					mtrx[i][col] = parsing(equ[i], coef, strlen(equ[i]));
 				}
-				
+
 				cut(equ[i], strlen(equ[i]), coef);
 			}
 			coef = order(equ[i], strlen(equ[i]), &col);
@@ -85,34 +87,45 @@ int main() {
 
 
 	//Using Cramer's rule to get the solution vector
-	printf_s("\n\nCRAMER'S RULE\n\n");
-	for ( i = 0; i < num; i++)
-	{
-		x[i] = cramer(mtrx, b, num, i);
-		printf_s("\n%.2f", x[i]);
-	}
-	det = determinent(mtrx, num);
-	
-	printf_s("\nDETERMINENT\n\t%.2f", det);
 
-	putchar('\n');
+	det = determinent(mtrx, num);
 
 	//Print Matrix
-	printf_s("\nMATRIX\n");
+	printf_s("\nMatrix A = \n");
 	for (i = 0;i < num;i++) {
+		//putchar('\t');
 		for (j = 0;j < num;j++) {
-			printf_s("%.2f ", mtrx[i][j]);
+			printf_s("\t%.2lf ", mtrx[i][j]);
 		}
 		printf_s("\n");
 	}
 
-	printf_s("Solution vector\n");
-	for ( i = 0; i < num; i++)
+	printf_s("\nMatrix A determinant = %.2lf\n", det);
+
+	printf_s("\nVector B = \n");
+	for (i = 0; i < num; i++)
 	{
-		printf_s("%.2f\n", b[i]);
+		printf_s("\t%.2lf\n", b[i]);
 	}
 
+	if (det != 0) {
+		printf_s("\nVector X = ");
+		for (i = 0; i < num; i++)
+		{
+			x[i] = cramer(mtrx, b, num, i);
+			if (i == 0)
+				printf_s("\n\tx = %.2lf", x[i]);
+			if (i == 1)
+				printf_s("\n\ty = %.2lf", x[i]);
+			if (i == 2)
+				printf_s("\n\tz = %.2lf", x[i]);
+		}
+	}
 
+	if (det == 0)
+		printf_s("\nThere is no single solution for that system of equations.");
+
+	printf_s("\nGoodbye.\n");
 
 	for (i = 0;i < num;i++)
 		free(mtrx[i]);
@@ -131,8 +144,8 @@ int main() {
 
 //cutting the eaquation to find the coefficient
 
-float parsing(char* equation, char coef, int length) {
-	float co = 0.0;
+double parsing(char* equation, char coef, int length) {
+	double co = 0.0;
 	int i = 0;
 	char str[81];
 	char* dex, * temp;
@@ -196,6 +209,7 @@ char order(char* equation, int length, int* col) {
 		}
 	}
 
+
 	switch (coef)
 	{
 	case 'x':
@@ -221,6 +235,14 @@ void cut(char* equation, int length, char coef) {
 	int j, i = 0;
 	char* dex;
 
+
+	dex = strchr(equation, '*'); //converts double dots to new line
+	while (dex != NULL)
+	{
+		equation[dex - equation] = ' ';
+		dex = strchr(dex + 1, '*');
+	}
+
 	dex = strchr(equation, coef);
 
 	while (i < dex - equation + 1) {
@@ -234,8 +256,8 @@ void cut(char* equation, int length, char coef) {
 
 
 //calculating the determinent
-float determinent(float** mtrx, int num) {
-	float det;
+double determinent(double** mtrx, int num) {
+	double det;
 	int i;
 
 	if (num == 2)
@@ -258,14 +280,14 @@ float determinent(float** mtrx, int num) {
 
 
 //Cramer's rule
-float cramer(float** mtrx, float* sol, int num, int col) {
+double cramer(double** mtrx, double* sol, int num, int col) {
 	int i, j;
-	float detmp, det, value;
-	float** tmpmtrx;
+	double detmp, det, value;
+	double** tmpmtrx;
 
-	tmpmtrx = malloc(sizeof(float*) * num);
+	tmpmtrx = malloc(sizeof(double*) * num);
 	for (i = 0;i < num;i++)
-		tmpmtrx[i] = malloc(sizeof(float) * num);
+		tmpmtrx[i] = malloc(sizeof(double) * num);
 
 	//Print Matrix
 	for (i = 0;i < num;i++) {
@@ -274,7 +296,7 @@ float cramer(float** mtrx, float* sol, int num, int col) {
 		}
 	}
 
-	for ( i = 0; i < num; i++)
+	for (i = 0; i < num; i++)
 	{
 		tmpmtrx[i][col] = sol[i];
 	}
@@ -284,4 +306,22 @@ float cramer(float** mtrx, float* sol, int num, int col) {
 	value = detmp / det;
 
 	return value;
+}
+
+
+//Narrowing down all of the spaces
+void space_handler(char* equation, int length) {
+	char* dex;
+	int i;
+
+	dex = strchr(equation, ' ');
+	while (dex != NULL)
+	{
+		for (i = dex - equation; i < length; i++)
+		{
+			equation[i] = equation[i + 1];
+		}
+		equation[i + 1] = '\0';
+		dex = strchr(dex, ' ');
+	}
 }
