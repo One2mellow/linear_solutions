@@ -127,7 +127,7 @@ int main() {
 	}
 
 	if (det == 0)
-		printf_s("\nThere is no single solution for that system of equations.");
+		printf_s("There is no single solution for that system of equations.");
 
 	printf_s("\nGoodbye.\n");
 
