@@ -254,7 +254,6 @@ void cut(char* equation, int length, char coef) {
 //calculating the determinent
 double determinent(double** mtrx, int num) {
 	double det;
-	int i;
 
 	if (num == 2)
 	{
